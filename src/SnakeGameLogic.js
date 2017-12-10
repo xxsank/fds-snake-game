@@ -37,27 +37,27 @@ export default class SnakeGameLogic {
         newHead.x--;
         break;
     }
-    if (newHead.x === this.fruit.x && newHead.y === this.fruit.y) {
+    if (this._checkIfEnds(newHead)) {
+      return false;
+    } else if (newHead.x === this.fruit.x && newHead.y === this.fruit.y) {
       this._pickNewFruit();
     } else {
       this.joints.pop();
     }
     this.joints.unshift(newHead);
+    return true;
   }
-  checkIfEnds() {
-    return this.joints.some(j => (
-      j.x < 0 || j.x >= COLS || j.y < 0 || j.y >= ROWS
-    )) || this._checkIfDuplicateExists();
-  }
-  _checkIfDuplicateExists() {
-    for (let i = 0; i < this.joints.length; i++) {
-      for (let j = i + 1; j < this.joints.length; j++) {
-        if (this.joints[i].x === this.joints[j].x && this.joints[i].y === this.joints[j].y) {
-          return true;
-        }
-      }
-    }
-    return false;
+  _checkIfEnds(newHead) {
+    const boundaryCond = (
+      newHead.x < 0 ||
+      newHead.x >= COLS ||
+      newHead.y < 0 ||
+      newHead.y >= ROWS
+    );
+    const hitMyselfCond = this.joints.some(j => (
+      newHead.x === j.x && newHead.y === j.y
+    ));
+    return boundaryCond || hitMyselfCond;
   }
   _pickNewFruit() {
     let fruit = {}

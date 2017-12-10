@@ -1,13 +1,15 @@
 import {html, render} from 'lit-html';
-import {ROWS, COLS} from './config';
+import throttle from 'lodash.throttle';
+import {ROWS, COLS, DIFFICULTY} from './config';
+import SnakeGameLogic from './SnakeGameLogic';
+
 import './index.css';
 
 export default class SnakeGame {
   delay = 300;
-
-  constructor(Logic) {
-    this.Logic = Logic;
-    this.handleKeydown = this.handleKeydown.bind(this);
+  gameState = null;
+  constructor() {
+    this.handleKeydown = throttle(this.handleKeydown.bind(this), 100);
     this.handleTurn = this.handleTurn.bind(this);
   }
 
@@ -35,23 +37,23 @@ export default class SnakeGame {
 
   handleTurn() {
     clearTimeout(this.timeoutID);
-    this.logic.nextState && this.logic.nextState();
-    this.updateTable();
-    if (this.logic.checkIfEnds && this.logic.checkIfEnds()) {
-      // alert('게임끝'); // TODO: 끝난 상태
+    const proceed = this.logic.nextState && this.logic.nextState();
+    if (!proceed) {
+      this.gameState = 'end';
       this.cleanup();
     } else {
-      this.draw();
+      this.updateTable();
       this.timeoutID = setTimeout(this.handleTurn, this.delay);
     }
+    this.draw();
   }
 
   init() {
     this.table = new Array(ROWS).fill(null).map(() => new Array(COLS).fill(null));
-    this.logic = new this.Logic();
+    this.logic = new SnakeGameLogic();
     document.addEventListener('keydown', this.handleKeydown);
     this.intervalID = setInterval(() => {
-      this.delay *= 0.999;
+      this.delay *= 0.999 ** DIFFICULTY;
     }, 100);
     this.handleTurn();
   }
@@ -64,7 +66,7 @@ export default class SnakeGame {
   }
 
   draw() {
-    render(this.template(), document.querySelector('#game'));
+    render(this.template(), document.querySelector('#root'));
   }
 
   updateTable() {
@@ -92,12 +94,17 @@ export default class SnakeGame {
   }
 
   template() {
-    return html`<div>
+    return html`<div class="game ${this.gameState === 'end' ? 'end' : ''}">
       ${this.table.map(cols => html`
         <div class="row">
           ${cols.map(cell => html`<div class="cell ${cell === 'joint' ? 'joint' : cell === 'fruit' ? 'fruit' : ''}"></div>`)}
-        </div>
-      `)}
+        </div>`)}
+      <p>
+        현재 길이: ${this.logic.joints.length}
+      </p>
+      ${this.gameState === 'end' ? html`<p>
+        게임 끝
+      </p>` : null}
     </div>`;
   }
 }

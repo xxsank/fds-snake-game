@@ -1,7 +1,6 @@
 import SnakeGame from './SnakeGame';
-import SnakeGameLogic from './SnakeGameLogic';
 
-const game = new SnakeGame(SnakeGameLogic);
+const game = new SnakeGame();
 game.init();
 
 if (module.hot) {
