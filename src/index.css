@@ -1,0 +1,47 @@
+body {
+  font-family: sans-serif;
+}
+
+#game-root {
+  width: 50vw;
+  margin: 0 auto;
+}
+
+.table__row {
+  display: flex;
+}
+
+.table__cell {
+  flex-grow: 1;
+  box-sizing: border-box;
+  margin: 1px;
+  background-color: #f5f5f5;
+  box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.38);
+}
+
+.table__cell::after {
+  display: block;
+  content: '';
+  padding-bottom: 100%;
+}
+
+.game.end .joint {
+  background-color: black;
+}
+
+.joint {
+  background-color: #ccc;
+}
+
+.fruit {
+  background-color: red;
+}
+
+.description {
+  margin-top: 1em;
+}
+
+.description .button {
+  display: block;
+  float: right;
+}
