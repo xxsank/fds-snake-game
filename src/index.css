@@ -11,15 +11,15 @@
   flex-grow: 1;
   box-sizing: border-box;
   margin: 1px;
-  background-color: #aaa;
-
-  &::after {
-    display: block;
-    content: '';
-    padding-bottom: 100%;
-  }
+  background-color: #eee;
 }
 
-.empty {
-  background-color: #ddd;
+.cell::after {
+  display: block;
+  content: '';
+  padding-bottom: 100%;
+}
+
+.joint {
+  background-color: #ccc;
 }
