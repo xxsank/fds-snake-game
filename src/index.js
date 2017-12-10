@@ -1,61 +1,17 @@
 import {html, render} from 'lit-html';
+import SnakeGameLogic from './SnakeGameLogic';
 
 import './index.css';
 
-class SnakeGameLogic {
-  numOfRows = 20;
-  numOfCols = 30;
-  fruit = {x: 10, y: 10};
-  joints = [{x: 0, y: 0}];
-  direction = 'right';
-  up() {
-    this.direction = 'up';
-  }
-  down() {
-    this.direction = 'down';
-  }
-  left() {
-    this.direction = 'left';
-  }
-  right() {
-    this.direction = 'right';
-  }
-  nextState() {
-    const newHead = Object.assign({}, this.joints[0]);
-    switch (this.direction) {
-      case 'up':
-        newHead.y--;
-        break;
-      case 'down':
-        newHead.y++;
-        break;
-      case 'right':
-        newHead.x++;
-        break;
-      case 'left':
-        newHead.x--;
-        break;
-    }
-    this.joints.pop();
-    this.joints.unshift(newHead);
-  }
-  checkIfEnds() {
-    return this.joints.some(j => (
-      j.x < 0 || j.x >= this.numOfCols || j.y < 0 || j.y >= this.numOfRows
-    ));
-  }
-}
+const ROWS = 20;
+const COLS = 30;
 
 class SnakeGame {
   delay = 300;
 
-  constructor(logic) {
-    const numOfRows = logic.numOfRows || 20;
-    const numOfCols = logic.numOfCols || 30;
-    this.table = new Array(numOfRows).fill(null).map(() => new Array(numOfCols).fill(null));
+  constructor() {
     this.handleKeydown = this.handleKeydown.bind(this);
     this.handleTurn = this.handleTurn.bind(this);
-    this.logic = logic;
   }
 
   handleKeydown(e) {
@@ -94,6 +50,8 @@ class SnakeGame {
   }
 
   init() {
+    this.table = new Array(ROWS).fill(null).map(() => new Array(COLS).fill(null));
+    this.logic = new SnakeGameLogic();
     document.addEventListener('keydown', this.handleKeydown);
     this.intervalID = setInterval(() => {
       this.delay *= 0.999;
@@ -141,12 +99,14 @@ class SnakeGame {
   }
 }
 
-const game = new SnakeGame(new SnakeGameLogic());
+const game = new SnakeGame();
 game.init();
 
 if (module.hot) {
-  module.hot.dispose(() => {
+  module.hot.accept('./SnakeGameLogic', () => {
+    console.log('heyhey');
     game.cleanup();
+    game.init();
   })
 }
 
