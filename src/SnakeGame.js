@@ -36,7 +36,7 @@ export default class SnakeGame {
   handleTurn() {
     clearTimeout(this.timeoutID);
     this.logic.nextState && this.logic.nextState();
-    this.logic.joints && this.applyJoints(this.logic.joints);
+    this.updateTable();
     if (this.logic.checkIfEnds && this.logic.checkIfEnds()) {
       // alert('게임끝'); // TODO: 끝난 상태
       this.cleanup();
@@ -67,10 +67,16 @@ export default class SnakeGame {
     render(this.template(), document.querySelector('#game'));
   }
 
-  applyJoints(joints) {
+  updateTable() {
+    const {joints, fruit} = this.logic;
+
+    if (!joints || !fruit) return;
+
     for (let r of this.table) {
-      r.fill(false);
+      r.fill(null);
     }
+
+    this.table[fruit.y][fruit.x] = 'fruit';
 
     for (let j of joints) {
       if (

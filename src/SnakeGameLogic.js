@@ -1,24 +1,29 @@
+import {ROWS, COLS} from './config';
+
 export default class SnakeGameLogic {
-  numOfRows = 20;
-  numOfCols = 30;
-  fruit = {x: 10, y: 10};
+  constructor() {
+    this._pickNewFruit();
+  }
   joints = [{x: 0, y: 0}];
-  direction = 'right';
+  _direction = 'right';
   up() {
-    this.direction = 'up';
+    this._direction = 'up';
   }
   down() {
-    this.direction = 'down';
+    this._direction = 'down';
   }
   left() {
-    this.direction = 'left';
+    this._direction = 'left';
   }
   right() {
-    this.direction = 'right';
+    this._direction = 'right';
   }
   nextState() {
-    const newHead = Object.assign({}, this.joints[0]);
-    switch (this.direction) {
+    const newHead = {
+      x: this.joints[0].x,
+      y: this.joints[0].y
+    };
+    switch (this._direction) {
       case 'up':
         newHead.y--;
         break;
@@ -32,12 +37,34 @@ export default class SnakeGameLogic {
         newHead.x--;
         break;
     }
-    this.joints.pop();
+    if (newHead.x === this.fruit.x && newHead.y === this.fruit.y) {
+      this._pickNewFruit();
+    } else {
+      this.joints.pop();
+    }
     this.joints.unshift(newHead);
   }
   checkIfEnds() {
     return this.joints.some(j => (
-      j.x < 0 || j.x >= this.numOfCols || j.y < 0 || j.y >= this.numOfRows
-    ));
+      j.x < 0 || j.x >= COLS || j.y < 0 || j.y >= ROWS
+    )) || this._checkIfDuplicateExists();
+  }
+  _checkIfDuplicateExists() {
+    for (let i = 0; i < this.joints.length; i++) {
+      for (let j = i + 1; j < this.joints.length; j++) {
+        if (this.joints[i].x === this.joints[j].x && this.joints[i].y === this.joints[j].y) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  _pickNewFruit() {
+    let fruit = {}
+    do {
+      fruit.x = Math.floor(Math.random() * COLS);
+      fruit.y = Math.floor(Math.random() * ROWS);
+    } while (this.joints.some(j => j.x === fruit.x && j.y === fruit.y))
+    this.fruit = fruit;
   }
 }
