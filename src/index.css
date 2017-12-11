@@ -2,16 +2,16 @@ body {
   font-family: sans-serif;
 }
 
-#root {
+#game-root {
   width: 50vw;
   margin: 0 auto;
 }
 
-.row {
+.table__row {
   display: flex;
 }
 
-.cell {
+.table__cell {
   flex-grow: 1;
   box-sizing: border-box;
   margin: 1px;
@@ -19,7 +19,7 @@ body {
   box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.38);
 }
 
-.cell::after {
+.table__cell::after {
   display: block;
   content: '';
   padding-bottom: 100%;
@@ -35,4 +35,13 @@ body {
 
 .fruit {
   background-color: red;
+}
+
+.description {
+  margin-top: 1em;
+}
+
+.description .button {
+  display: block;
+  float: right;
 }

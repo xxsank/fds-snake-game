@@ -1,6 +1,12 @@
-import {html, render} from 'lit-html';
+import {html, render} from 'lit-html/lib/lit-extended';
 import throttle from 'lodash.throttle';
-import {ROWS, COLS, INITIAL_DELAY, DELAY_EXPONENT} from './config';
+import {
+  ROWS,
+  COLS,
+  INITIAL_DELAY,
+  DELAY_EXPONENT,
+  GAME_ROOT
+} from './config';
 import SnakeGameLogic from './SnakeGameLogic';
 
 import './index.css';
@@ -51,6 +57,12 @@ export default class SnakeGame {
   init() {
     this.table = new Array(ROWS).fill(null).map(() => new Array(COLS).fill(null));
     this.logic = new SnakeGameLogic();
+    this.updateTable();
+    this.draw();
+  }
+
+  start() {
+    this.gameState = 'running';
     document.addEventListener('keydown', this.handleKeydown);
     this.intervalID = setInterval(() => {
       this.delay *= DELAY_EXPONENT;
@@ -66,7 +78,7 @@ export default class SnakeGame {
   }
 
   draw() {
-    render(this.template(), document.querySelector('#root'));
+    render(this.template(), document.querySelector(GAME_ROOT));
   }
 
   updateTable() {
@@ -92,17 +104,23 @@ export default class SnakeGame {
   }
 
   template() {
-    return html`<div class="game ${this.gameState === 'end' ? 'end' : ''}">
-      ${this.table.map(cols => html`
-        <div class="row">
-          ${cols.map(cell => html`<div class="cell ${cell === 'joint' ? 'joint' : cell === 'fruit' ? 'fruit' : ''}"></div>`)}
-        </div>`)}
-      <p>
-        현재 길이: ${this.logic.joints.length}
-      </p>
-      ${this.gameState === 'end' ? html`<p>
-        게임 끝
-      </p>` : null}
+    return html`<div class$="game ${this.gameState === 'end' ? 'end' : ''}">
+      <div class="table">
+        ${this.table.map(cols => html`
+          <div class="table__row">
+            ${cols.map(cell => html`<div class$="table__cell ${cell === 'joint' ? 'joint' : cell === 'fruit' ? 'fruit' : ''}"></div>`)}
+          </div>`)}
+      </div>
+      <div class="description">
+        ${this.gameState === 'end' ? html`
+          기록: ${this.logic.joints.length}
+          <button class="button restart-button" on-click="${e => {this.init(); this.start();}}">다시 시작</button>
+        ` : this.gameState === 'running' ? html`
+          현재 길이: ${this.logic.joints.length}
+        ` : html`
+          <button class="button start-button" on-click="${e => this.start()}">게임 시작</button>
+        `}
+      </div>
     </div>`;
   }
 }
