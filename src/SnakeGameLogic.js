@@ -1,23 +1,24 @@
 import {ROWS, COLS} from './config';
 
-export default class SnakeGameLogic {
-  constructor() {
-    this._pickNewFruit();
-  }
-  joints = [{x: 0, y: 0}];
-  _direction = 'right';
+function SnakeGameLogic() {
+  this.joints = [{x: 0, y: 0}];
+  this._direction = 'right';
+  this._pickNewFruit();
+}
+
+SnakeGameLogic.prototype = {
   up() {
     this._direction = 'up';
-  }
+  },
   down() {
     this._direction = 'down';
-  }
+  },
   left() {
     this._direction = 'left';
-  }
+  },
   right() {
     this._direction = 'right';
-  }
+  },
   nextState() {
     const newHead = {
       x: this.joints[0].x,
@@ -46,7 +47,7 @@ export default class SnakeGameLogic {
     }
     this.joints.unshift(newHead);
     return true;
-  }
+  },
   _checkIfEnds(newHead) {
     const boundaryCond = (
       newHead.x < 0 ||
@@ -58,7 +59,7 @@ export default class SnakeGameLogic {
       newHead.x === j.x && newHead.y === j.y
     ));
     return boundaryCond || hitMyselfCond;
-  }
+  },
   _pickNewFruit() {
     let fruit = {}
     do {
@@ -68,3 +69,5 @@ export default class SnakeGameLogic {
     this.fruit = fruit;
   }
 }
+
+export default SnakeGameLogic;

@@ -1,12 +1,12 @@
 import {html, render} from 'lit-html';
 import throttle from 'lodash.throttle';
-import {ROWS, COLS, DIFFICULTY} from './config';
+import {ROWS, COLS, DIFFICULTY, INITIAL_DELAY, DELAY_EXPONENT} from './config';
 import SnakeGameLogic from './SnakeGameLogic';
 
 import './index.css';
 
 export default class SnakeGame {
-  delay = 300;
+  delay = INITIAL_DELAY;
   gameState = null;
   constructor() {
     this.handleKeydown = throttle(this.handleKeydown.bind(this), 100);
@@ -53,8 +53,8 @@ export default class SnakeGame {
     this.logic = new SnakeGameLogic();
     document.addEventListener('keydown', this.handleKeydown);
     this.intervalID = setInterval(() => {
-      this.delay *= 0.999 ** DIFFICULTY;
-    }, 100);
+      this.delay *= DELAY_EXPONENT ** DIFFICULTY;
+    }, 1000);
     this.handleTurn();
   }
 
