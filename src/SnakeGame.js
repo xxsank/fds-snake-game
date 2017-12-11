@@ -1,6 +1,6 @@
 import {html, render} from 'lit-html';
 import throttle from 'lodash.throttle';
-import {ROWS, COLS, DIFFICULTY, INITIAL_DELAY, DELAY_EXPONENT} from './config';
+import {ROWS, COLS, INITIAL_DELAY, DELAY_EXPONENT} from './config';
 import SnakeGameLogic from './SnakeGameLogic';
 
 import './index.css';
@@ -10,7 +10,7 @@ export default class SnakeGame {
   gameState = null;
   constructor() {
     this.handleKeydown = throttle(this.handleKeydown.bind(this), 100);
-    this.handleTurn = this.handleTurn.bind(this);
+    this.nextFrame = this.nextFrame.bind(this);
   }
 
   handleKeydown(e) {
@@ -18,24 +18,24 @@ export default class SnakeGame {
     switch (e.key) {
       case 'ArrowUp':
         this.logic.up && this.logic.up();
-        this.handleTurn();
+        this.nextFrame();
         break;
       case 'ArrowDown':
         this.logic.up && this.logic.down();
-        this.handleTurn();
+        this.nextFrame();
         break;
       case 'ArrowLeft':
         this.logic.up && this.logic.left();
-        this.handleTurn();
+        this.nextFrame();
         break;
       case 'ArrowRight':
         this.logic.up && this.logic.right();
-        this.handleTurn();
+        this.nextFrame();
         break;
     }
   }
 
-  handleTurn() {
+  nextFrame() {
     clearTimeout(this.timeoutID);
     const proceed = this.logic.nextState && this.logic.nextState();
     if (!proceed) {
@@ -43,7 +43,7 @@ export default class SnakeGame {
       this.cleanup();
     } else {
       this.updateTable();
-      this.timeoutID = setTimeout(this.handleTurn, this.delay);
+      this.timeoutID = setTimeout(this.nextFrame, this.delay);
     }
     this.draw();
   }
@@ -53,9 +53,9 @@ export default class SnakeGame {
     this.logic = new SnakeGameLogic();
     document.addEventListener('keydown', this.handleKeydown);
     this.intervalID = setInterval(() => {
-      this.delay *= DELAY_EXPONENT ** DIFFICULTY;
+      this.delay *= DELAY_EXPONENT;
     }, 1000);
-    this.handleTurn();
+    this.nextFrame();
   }
 
   cleanup() {
@@ -70,22 +70,20 @@ export default class SnakeGame {
   }
 
   updateTable() {
-    const {joints, fruit} = this.logic;
+    const {joints, fruit: f} = this.logic;
 
-    if (!joints || !fruit) return;
+    if (!joints || !f) return;
 
     for (let r of this.table) {
       r.fill(null);
     }
 
-    this.table[fruit.y][fruit.x] = 'fruit';
+    if (f.y < this.table.length && f.x < this.table[f.y].length) {
+      this.table[f.y][f.x] = 'fruit';
+    }
 
     for (let j of joints) {
-      if (
-        j.y < this.table.length
-        && this.table[j.y]
-        && j.x < this.table[j.y].length
-      ) {
+      if (j.y < this.table.length && j.x < this.table[j.y].length) {
         this.table[j.y][j.x] = 'joint';
       }
     }

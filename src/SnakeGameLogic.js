@@ -1,73 +1,37 @@
 import {ROWS, COLS} from './config';
 
 function SnakeGameLogic() {
-  this.joints = [{x: 0, y: 0}];
-  this._direction = 'right';
-  this._pickNewFruit();
+  // 각 마디의 좌표를 저장하는 배열
+  this.joints = [{x: 1, y: 0}, {x: 0, y: 0}];
+
+  // 먹이의 좌표
+  this.fruit = {x: 5, y: 10};
 }
 
 SnakeGameLogic.prototype = {
   up() {
-    this._direction = 'up';
+    // 위쪽 화살표 키를 누르면 실행되는 함수
+    console.log('up');
   },
   down() {
-    this._direction = 'down';
+    // 아래쪽 화살표 키를 누르면 실행되는 함수
+    console.log('down');
   },
   left() {
-    this._direction = 'left';
+    // 왼쪽 화살표 키를 누르면 실행되는 함수
+    console.log('left');
   },
   right() {
-    this._direction = 'right';
+    // 오른쪽 화살표 키를 누르면 실행되는 함수
+    console.log('right');
   },
   nextState() {
-    const newHead = {
-      x: this.joints[0].x,
-      y: this.joints[0].y
-    };
-    switch (this._direction) {
-      case 'up':
-        newHead.y--;
-        break;
-      case 'down':
-        newHead.y++;
-        break;
-      case 'right':
-        newHead.x++;
-        break;
-      case 'left':
-        newHead.x--;
-        break;
-    }
-    if (this._checkIfEnds(newHead)) {
-      return false;
-    } else if (newHead.x === this.fruit.x && newHead.y === this.fruit.y) {
-      this._pickNewFruit();
-    } else {
-      this.joints.pop();
-    }
-    this.joints.unshift(newHead);
+    // 한 번 움직여야 할 타이밍마다 실행되는 함수
+    // 게임이 아직 끝나지 않았으면 `true`를 반환
+    // 게임이 끝났으면 `false`를 반환
+    console.log(`nextState`);
     return true;
   },
-  _checkIfEnds(newHead) {
-    const boundaryCond = (
-      newHead.x < 0 ||
-      newHead.x >= COLS ||
-      newHead.y < 0 ||
-      newHead.y >= ROWS
-    );
-    const hitMyselfCond = this.joints.some(j => (
-      newHead.x === j.x && newHead.y === j.y
-    ));
-    return boundaryCond || hitMyselfCond;
-  },
-  _pickNewFruit() {
-    let fruit = {}
-    do {
-      fruit.x = Math.floor(Math.random() * COLS);
-      fruit.y = Math.floor(Math.random() * ROWS);
-    } while (this.joints.some(j => j.x === fruit.x && j.y === fruit.y))
-    this.fruit = fruit;
-  }
 }
 
 export default SnakeGameLogic;
