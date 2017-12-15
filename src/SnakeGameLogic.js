@@ -3,10 +3,9 @@ import {ROWS, COLS} from './config';
 function SnakeGameLogic() {
   // 각 마디의 좌표를 저장하는 배열
   this.joints = [
-    {x: 2, y: 10},
+    {x: 2, y: 0},
     {x: 1, y: 0},
     {x: 0, y: 0},
-    {x: 10, y: 7}
   ];
 
   // 먹이의 좌표
