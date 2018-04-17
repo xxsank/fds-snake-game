@@ -2,7 +2,7 @@
 export const GAME_ROOT = '#game-root';
 
 // 게임 자동 실행 여부
-export const AUTO_START = true;
+export const AUTO_START = false;
 
 // 게임판의 행 개수
 export const ROWS = 20;
