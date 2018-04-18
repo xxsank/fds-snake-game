@@ -17,12 +17,15 @@ let bo = {};
 let ri = {};
 let le = {};
 
+let clickNow = 0;
+
 SnakeGameLogic.prototype.up = function() {
   // 위쪽 화살표 키를 누르면 실행되는 함수
   console.log('up');
   // 위버튼을 눌렀을때 동작할 좌표변환
   this.joints.unshift({x :this.joints[0].x , y : this.joints[0].y-1});
   to = this.joints.pop();
+  clickNow = 1;
   console.log(to);
   
 }
@@ -33,6 +36,7 @@ SnakeGameLogic.prototype.down = function() {
   // 아래버튼을 눌렀을때 동작할 좌표변환
   this.joints.unshift({x :this.joints[0].x , y : this.joints[0].y+1});
   bo = this.joints.pop();
+  clickNow = 2;
   console.log(bo);
   
 }
@@ -43,6 +47,7 @@ SnakeGameLogic.prototype.left = function() {
   // 왼쪽버튼을 눌렀을때 동작할 좌표변환
   this.joints.unshift({x :this.joints[0].x-1 , y : this.joints[0].y});
   le = this.joints.pop();
+  clickNow = 3;
   console.log(le);
   
 }
@@ -53,6 +58,7 @@ SnakeGameLogic.prototype.right = function() {
   // 오른쪽버튼을 눌렀을때 동작할 좌표변환
   this.joints.unshift({x :this.joints[0].x+1 , y : this.joints[0].y});
   ri = this.joints.pop();
+  clickNow = 4;
   console.log(ri);  
 }
 
@@ -64,26 +70,27 @@ SnakeGameLogic.prototype.nextState = function() {
   // console.log(this.joints[0]);
   
   if(this.joints[0].x === this.fruit.x && this.joints[0].y === this.fruit.y){
+
     this.fruit = {x: Math.trunc(Math.random()*30), y: Math.trunc(Math.random()*20)};
     console.log(this.joints.slice(-1)[0]);
     
     // 위 버튼 툴렀을때
-    if(this.joints.slice(-1)[0].y === to.y-1){
+    if(clickNow === 1){
       this.joints.push(to);
       
     }
     // 아래 버튼 눌렀을때
-    else if(this.joints.slice(-1)[0].y === bo.y+1 ){
+    else if(clickNow === 2){
       this.joints.push(bo);
     }
       
     // 왼쪽 버튼 눌럿을때
-    else if(this.joints.slice(-1)[0].x === le.x-1){
+    else if(clickNow === 3){
       this.joints.push(le);
     }
 
     // 오른쪽 버튼 눌렀을때
-    else if(this.joints.slice(-1)[0].x === ri.x+1){
+    else if(clickNow === 4){
       this.joints.push(ri);
     }
 
