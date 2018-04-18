@@ -48,7 +48,6 @@ SnakeGameLogic.prototype.nextState = function() {
   // 게임이 아직 끝나지 않았으면 `true`를 반환
   // 게임이 끝났으면 `false`를 반환
   console.log(`nextState`);
-  console.log(this.joints);
   // 방향 조작 로직
   if(this.clickIdx === 4){
     this.joints.unshift({x :this.joints[0].x+1 , y : this.joints[0].y});
@@ -71,11 +70,11 @@ SnakeGameLogic.prototype.nextState = function() {
   }
 
   // 게임이 끝났을 때 로직  
-    //  벽면에 부딪혔을때 끝나는 로직
+
+  //  벽면에 부딪혔을때 끝나는 로직
   if(this.joints[0].y === 20 || this.joints[0].y === -1) return false;
   if(this.joints[0].x === 30 || this.joints[0].x === -1) return false;
 
-  // this.newHead = this.joints[0];
   // 몸을 부딪혔을때 끝나는 로직
   
   for(let i = 1 ; i<this.joints.length; i++){
@@ -84,12 +83,11 @@ SnakeGameLogic.prototype.nextState = function() {
       }
   }
 
-  // this.newHead = this.joints[0];
-  // return this.joints.some((item,index.) => item.x === this.newHead.x && item.y === this.newHead.y);
 
   // 과일을먹고 꼬리가 추가되는 로직
   if(this.joints[0].x === this.fruit.x && this.joints[0].y === this.fruit.y){
     // 과일을 먹으면 랜덤으로 다른위치에 생성하는 코드
+
     this.fruit = {x: Math.trunc(Math.random()*30), y: Math.trunc(Math.random()*20)};
     
     // 위 버튼 툴렀을때
