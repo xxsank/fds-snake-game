@@ -9,14 +9,7 @@ function SnakeGameLogic() {
   ];
   // 먹이의 좌표
   this.fruit = {x: 3, y: 5};
-  // 누를때마다 저장될 좌표 변환
-  this.to = {};
-  this.bo = {};
-  this.ri = {};
-  this.le = {};
-  
   this.clickIdx = 4;
-  this.newHead = {};
 }
 
 
@@ -51,29 +44,28 @@ SnakeGameLogic.prototype.nextState = function() {
   // 방향 조작 로직
   if(this.clickIdx === 4){
     this.joints.unshift({x :this.joints[0].x+1 , y : this.joints[0].y});
-    this.ri = this.joints.pop();
   }
 
   else if(this.clickIdx === 3){
     this.joints.unshift({x :this.joints[0].x-1 , y : this.joints[0].y});
-    this.le = this.joints.pop();
   }
 
   else if(this.clickIdx === 2){
     this.joints.unshift({x :this.joints[0].x , y : this.joints[0].y+1});
-    this.bo = this.joints.pop();
   }
 
   else if(this.clickIdx === 1){
     this.joints.unshift({x :this.joints[0].x , y : this.joints[0].y-1});
-    this.to = this.joints.pop();
   }
+  // to, bo, ri, le를 따로 둘 필요가 없어 보여서 한 줄로 줄여봤습니다.
+  const prevJoint = this.joints.pop();
 
   // 게임이 끝났을 때 로직  
 
   //  벽면에 부딪혔을때 끝나는 로직
-  if(this.joints[0].y === 20 || this.joints[0].y === -1) return false;
-  if(this.joints[0].x === 30 || this.joints[0].x === -1) return false;
+  // 방어적 프로그래밍을 하는 것이 좋습니다.
+  if(this.joints[0].y >= ROWS || this.joints[0].y <= -1) return false;
+  if(this.joints[0].x >= COLS || this.joints[0].x <= -1) return false;
 
   // 몸을 부딪혔을때 끝나는 로직
   
@@ -89,25 +81,7 @@ SnakeGameLogic.prototype.nextState = function() {
     // 과일을 먹으면 랜덤으로 다른위치에 생성하는 코드
 
     this.fruit = {x: Math.trunc(Math.random()*30), y: Math.trunc(Math.random()*20)};
-    
-    // 위 버튼 툴렀을때
-    if(this.clickIdx === 1){
-      this.joints.push(this.to);
-    }
-    // 아래 버튼 눌렀을때
-    else if(this.clickIdx === 2){
-      this.joints.push(this.bo);
-    }
-      
-    // 왼쪽 버튼 눌럿을때
-    else if(this.clickIdx === 3){
-      this.joints.push(this.le);
-    }
-
-    // 오른쪽 버튼 눌렀을때
-    else if(this.clickIdx === 4){
-      this.joints.push(this.ri);
-    }
+    this.joints.push(prevJoint);
   }
 
   return true;
